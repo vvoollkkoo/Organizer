@@ -1,0 +1,104 @@
+using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Server;
+
+namespace ServerTests
+{
+    [TestClass]
+    public class ServerTests
+    {
+        //Создание нового пользователя
+        //Выдает отрицательный результат, так как логин и пароль используются
+        [TestMethod]
+        public void InsertUser_loginAndPass_UEReturned()
+        {
+            string login = "admin";
+            string pass = "admin";
+            string expected = "UE#";
+
+            AsyncServer server = new Server.AsyncServer();
+            string actual = server.InsertUser(login, pass);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        //Создание нового пользователя
+        //Выдает положительный результат, так как, логин и пароль не занят 
+        [TestMethod]
+        public void InsertUser_loginAndPass_ILReturned()
+        {
+            string login = "qwerty";
+            string pass = "qwerty";
+            string expected = "IL#";
+
+            AsyncServer server = new Server.AsyncServer();
+            string actual = server.InsertUser(login, pass);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        //Создание новой записи в таблице контакты
+        //Выдает положительный результат, запись добавляется в бд
+        [TestMethod]
+        public void InsertContact_loginAndPassAndContact_CCReturned()
+        {
+            string login = "qwerty";
+            string pass = "qwerty";
+            Contact contact = new Contact(1, "testName", "testVnme", "testSname", "88888888888");
+            string expected = "CC#";
+
+            AsyncServer server = new Server.AsyncServer();
+            string actual = server.InsertContact(login, pass, contact);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        //Создание новой записи в таблице контакты
+        //Выдает отрицательный результат, так как пользователь не найден
+        [TestMethod]
+        public void InsertContact_loginAndPassAndContact_NUReturned()
+        {
+            string login = "test";
+            string pass = "test";
+            Contact contact = new Contact(1, "testName", "testVnme", "testSname", "88888888888");
+            string expected = "NU#";
+
+            AsyncServer server = new Server.AsyncServer();
+            string actual = server.InsertContact(login, pass, contact);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        //Удаление записи из бд
+        //Выдает отрицательный, ошибка удаления записи
+        [TestMethod]
+        public void DeleteContact_loginAndPassAndContact_XXReturned()
+        {
+            string login = "qwerty";
+            string pass = "qwerty";
+            Contact contact = new Contact(1, "testName", "testVnme", "testSname", "88888888888");
+            string expected = "XX#";
+
+            AsyncServer server = new Server.AsyncServer();
+            string actual = server.DeleteContact(login, pass, contact);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        //Удаление записи из бд
+        //Выдает отрицательный результат, пользователь не найден
+        [TestMethod]
+        public void DeleteContact_loginAndPassAndContact_NUReturned()
+        {
+            string login = "test";
+            string pass = "test";
+            Contact contact = new Contact(1, "testName", "testVnme", "testSname", "88888888888");
+            string expected = "NU#";
+
+            AsyncServer server = new Server.AsyncServer();
+            string actual = server.DeleteContact(login, pass, contact);
+
+            Assert.AreEqual(expected, actual);
+        }
+    }
+}
